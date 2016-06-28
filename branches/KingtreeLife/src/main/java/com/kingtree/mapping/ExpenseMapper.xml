@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.kingtree.dao.ExpenseMapper">
+	<resultMap id="BaseResultMap" type="com.kingtree.model.Expense">
+		<id column="ID" property="id" jdbcType="INTEGER" />
+		<result column="EXPENSE_TIME" property="expenseTime" jdbcType="TIMESTAMP" />
+		<result column="ITEM_NAME" property="itemName" jdbcType="VARCHAR" />
+		<result column="MONEY" property="money" jdbcType="DOUBLE" />
+		<result column="REMARK" property="remark" jdbcType="VARCHAR" />
+		<result column="GMT_CREATE" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="GMT_MODIFIED" property="gmtModified" jdbcType="TIMESTAMP" />
+		<result column="IS_DELETE" property="isDelete" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ID, EXPENSE_TIME, ITEM_NAME, MONEY, REMARK, GMT_CREATE, GMT_MODIFIED, IS_DELETE
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from expense
+		where ID = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey">
+		delete from expense
+		where ID = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="com.kingtree.model.Expense" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into expense (ID,
+		EXPENSE_TIME, ITEM_NAME,
+		MONEY, REMARK, GMT_CREATE,
+		GMT_MODIFIED, IS_DELETE)
+		values
+		(#{id,jdbcType=INTEGER}, #{expenseTime,jdbcType=TIMESTAMP},
+		#{itemName,jdbcType=VARCHAR},
+		#{money,jdbcType=DOUBLE},
+		#{remark,jdbcType=VARCHAR},
+		#{gmtCreate,jdbcType=TIMESTAMP},
+		#{gmtModified,jdbcType=TIMESTAMP},
+		#{isDelete,jdbcType=INTEGER})
+	</insert>
+	<insert id="insertSelective" parameterType="com.kingtree.model.Expense" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+		insert into expense
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				ID,
+			</if>
+			<if test="expenseTime != null">
+				EXPENSE_TIME,
+			</if>
+			<if test="itemName != null">
+				ITEM_NAME,
+			</if>
+			<if test="money != null">
+				MONEY,
+			</if>
+			<if test="remark != null">
+				REMARK,
+			</if>
+			<if test="gmtCreate != null">
+				GMT_CREATE,
+			</if>
+			<if test="gmtModified != null">
+				GMT_MODIFIED,
+			</if>
+			<if test="isDelete != null">
+				IS_DELETE,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="expenseTime != null">
+				#{expenseTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="itemName != null">
+				#{itemName,jdbcType=VARCHAR},
+			</if>
+			<if test="money != null">
+				#{money,jdbcType=DOUBLE},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null">
+				#{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModified != null">
+				#{gmtModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDelete != null">
+				#{isDelete,jdbcType=INTEGER},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="com.kingtree.model.Expense">
+		update expense
+		<set>
+			<if test="expenseTime != null">
+				EXPENSE_TIME = #{expenseTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="itemName != null">
+				ITEM_NAME = #{itemName,jdbcType=VARCHAR},
+			</if>
+			<if test="money != null">
+				MONEY = #{money,jdbcType=DOUBLE},
+			</if>
+			<if test="remark != null">
+				REMARK = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null">
+				GMT_CREATE = #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModified != null">
+				GMT_MODIFIED = #{gmtModified,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isDelete != null">
+				IS_DELETE = #{isDelete,jdbcType=INTEGER},
+			</if>
+		</set>
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="com.kingtree.model.Expense">
+		update expense
+		set EXPENSE_TIME = #{expenseTime,jdbcType=TIMESTAMP},
+		ITEM_NAME =
+		#{itemName,jdbcType=VARCHAR},
+		MONEY = #{money,jdbcType=DOUBLE},
+		REMARK = #{remark,jdbcType=VARCHAR},
+		GMT_CREATE = #{gmtCreate,jdbcType=TIMESTAMP},
+		GMT_MODIFIED = #{gmtModified,jdbcType=TIMESTAMP},
+		IS_DELETE = #{isDelete,jdbcType=INTEGER}
+		where ID = #{id,jdbcType=INTEGER}
+	</update>
+
+	<select id="selectByTime" resultMap="BaseResultMap">
+		select * from expense t where 1=1
+		<if test="start != null">
+			and t.expense_time &gt;= #{start, jdbcType=TIMESTAMP}
+		</if>
+		<if test="end != null">
+			and t.expense_time &lt; #{end, jdbcType=TIMESTAMP}
+		</if>
+	</select>
+</mapper>
