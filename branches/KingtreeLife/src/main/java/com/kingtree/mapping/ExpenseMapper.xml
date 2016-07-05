@@ -3,6 +3,7 @@
 <mapper namespace="com.kingtree.dao.ExpenseMapper">
 	<resultMap id="BaseResultMap" type="com.kingtree.model.Expense">
 		<id column="ID" property="id" jdbcType="INTEGER" />
+		<id column="DICTIONARY_ID" property="dictionaryId" jdbcType="INTEGER" />
 		<result column="EXPENSE_TIME" property="expenseTime" jdbcType="TIMESTAMP" />
 		<result column="ITEM_NAME" property="itemName" jdbcType="VARCHAR" />
 		<result column="MONEY" property="money" jdbcType="DOUBLE" />
@@ -12,7 +13,7 @@
 		<result column="IS_DELETE" property="isDelete" jdbcType="INTEGER" />
 	</resultMap>
 	<sql id="Base_Column_List">
-		ID, EXPENSE_TIME, ITEM_NAME, MONEY, REMARK, GMT_CREATE, GMT_MODIFIED, IS_DELETE
+		ID, DICTIONARY_ID, EXPENSE_TIME, ITEM_NAME, MONEY, REMARK, GMT_CREATE, GMT_MODIFIED, IS_DELETE
 	</sql>
 	<select id="selectByPrimaryKey" resultMap="BaseResultMap">
 		select
@@ -21,16 +22,18 @@
 		where ID = #{id,jdbcType=INTEGER}
 	</select>
 	<delete id="deleteByPrimaryKey">
-		delete from expense
-		where ID = #{id,jdbcType=INTEGER}
+		update expense set is_delete = 1 where id = #{id,jdbcType=INTEGER}
 	</delete>
 	<insert id="insert" parameterType="com.kingtree.model.Expense" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
-		insert into expense (ID,
+		insert into expense
+		(ID,DICTIONARY_ID,
 		EXPENSE_TIME, ITEM_NAME,
 		MONEY, REMARK, GMT_CREATE,
 		GMT_MODIFIED, IS_DELETE)
 		values
-		(#{id,jdbcType=INTEGER}, #{expenseTime,jdbcType=TIMESTAMP},
+		(#{id,jdbcType=INTEGER},
+		#{dictionaryId,jdbcType=INTEGER},
+		#{expenseTime,jdbcType=TIMESTAMP},
 		#{itemName,jdbcType=VARCHAR},
 		#{money,jdbcType=DOUBLE},
 		#{remark,jdbcType=VARCHAR},
@@ -43,6 +46,9 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				ID,
+			</if>
+			<if test="dictionaryId != null">
+				DICTIONARY_ID,
 			</if>
 			<if test="expenseTime != null">
 				EXPENSE_TIME,
@@ -69,6 +75,9 @@
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
 			<if test="id != null">
 				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="dictionaryId != null">
+				#{dictionaryId,jdbcType=INTEGER},
 			</if>
 			<if test="expenseTime != null">
 				#{expenseTime,jdbcType=TIMESTAMP},
@@ -99,6 +108,9 @@
 			<if test="expenseTime != null">
 				EXPENSE_TIME = #{expenseTime,jdbcType=TIMESTAMP},
 			</if>
+			<if test="dictionaryId != null">
+				DICTIONARY_ID = #{dictionaryId,jdbcType=INTEGER},
+			</if>
 			<if test="itemName != null">
 				ITEM_NAME = #{itemName,jdbcType=VARCHAR},
 			</if>
@@ -125,21 +137,45 @@
 		set EXPENSE_TIME = #{expenseTime,jdbcType=TIMESTAMP},
 		ITEM_NAME =
 		#{itemName,jdbcType=VARCHAR},
+		DICTIONARY_ID = #{dictionaryId,jdbcType=INTEGER},
 		MONEY = #{money,jdbcType=DOUBLE},
 		REMARK = #{remark,jdbcType=VARCHAR},
 		GMT_CREATE = #{gmtCreate,jdbcType=TIMESTAMP},
 		GMT_MODIFIED = #{gmtModified,jdbcType=TIMESTAMP},
 		IS_DELETE = #{isDelete,jdbcType=INTEGER}
-		where ID = #{id,jdbcType=INTEGER}
+		where ID =
+		#{id,jdbcType=INTEGER}
 	</update>
 
-	<select id="selectByTime" resultMap="BaseResultMap">
-		select * from expense t where 1=1
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from expense t where t.is_delete = 0
 		<if test="start != null">
 			and t.expense_time &gt;= #{start, jdbcType=TIMESTAMP}
 		</if>
 		<if test="end != null">
 			and t.expense_time &lt; #{end, jdbcType=TIMESTAMP}
+		</if>
+		<if test="type != null and type > 0">
+			and t.dictionary_id = #{type, jdbcType=INTEGER}
+		</if>
+		<if test="expenseName != null">
+			and t.item_name like CONCAT('%',#{expenseName},'%' )
+		</if>
+		limit #{page, jdbcType=INTEGER}, #{pageSize, jdbcType=INTEGER}
+	</select>
+	<select id="countAll" resultType="int">
+		select * from expense t where t.is_delete = 0
+		<if test="start != null">
+			and t.expense_time &gt;= #{start, jdbcType=TIMESTAMP}
+		</if>
+		<if test="end != null">
+			and t.expense_time &lt; #{end, jdbcType=TIMESTAMP}
+		</if>
+		<if test="type != null and type > 0">
+			and t.dictionary_id = #{type, jdbcType=INTEGER}
+		</if>
+		<if test="expenseName != null">
+			and t.item_name like CONCAT('%',#{expenseName},'%' )
 		</if>
 	</select>
 </mapper>

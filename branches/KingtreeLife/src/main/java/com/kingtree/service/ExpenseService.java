@@ -11,6 +11,6 @@ public interface ExpenseService {
 
 	int add(Expense expense);
 
-	List<Expense> gets(Timestamp start, Timestamp end);
+	List<Expense> gets(String expenseName, int type, Timestamp start, Timestamp end, int page, int pageSize);
 
 }

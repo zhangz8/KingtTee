@@ -1,9 +1,17 @@
 package com.kingtree.model;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-public class Expense {
-	private Integer id;
+public class Expense implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7030226225935306193L;
+
+	private int id;
+
+	private int dictionaryId;
 
 	private Timestamp expenseTime;
 
@@ -17,7 +25,17 @@ public class Expense {
 
 	private Timestamp gmtModified;
 
-	private Integer isDelete;
+	private int isDelete;
+
+	public Expense() {
+	}
+
+	public Expense(Integer dictionaryId, Timestamp expenseTime, String itemName, Double money) {
+		this.dictionaryId = dictionaryId;
+		this.expenseTime = expenseTime;
+		this.itemName = itemName;
+		this.money = money;
+	}
 
 	public Integer getId() {
 		return id;
@@ -29,6 +47,14 @@ public class Expense {
 
 	public String getItemName() {
 		return itemName;
+	}
+
+	public Integer getDictionaryId() {
+		return dictionaryId;
+	}
+
+	public void setDictionaryId(Integer dictionaryId) {
+		this.dictionaryId = dictionaryId;
 	}
 
 	public void setItemName(String itemName) {

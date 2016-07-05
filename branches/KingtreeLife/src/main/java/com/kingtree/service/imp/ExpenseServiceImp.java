@@ -28,8 +28,8 @@ public class ExpenseServiceImp implements ExpenseService {
 	}
 
 	@Override
-	public List<Expense> gets(Timestamp start, Timestamp end) {
-		return expenseMapper.selectByTime(start, end);
+	public List<Expense> gets(String expenseName, int type, Timestamp start, Timestamp end, int page, int pageSize) {
+		return expenseMapper.selectAll(expenseName, type, start, end, page, pageSize);
 	}
 
 }

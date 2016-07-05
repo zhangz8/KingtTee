@@ -20,5 +20,10 @@ public interface ExpenseMapper {
 
 	int updateByPrimaryKey(Expense record);
 
-	List<Expense> selectByTime(@Param(value = "start") Timestamp start, @Param(value = "end") Timestamp end);
+	List<Expense> selectAll(@Param(value = "expenseName") String expenseName, @Param(value = "type") int type,
+			@Param(value = "start") Timestamp start, @Param(value = "end") Timestamp end,
+			@Param(value = "page") int page, @Param(value = "pageSize") int pageSize);
+
+	int countAll(@Param(value = "expenseName") String expenseName, @Param(value = "type") int type,
+			@Param(value = "start") Timestamp start, @Param(value = "end") Timestamp end);
 }
